@@ -15,4 +15,20 @@
 7:
 8:
 9:
+.cfi_endproc
 .endm
+
+.globl CDECL(objc_msgSend)
+TYPE_DIRECTIVE(CDECL(objc_msgSend), @function)
+
+.globl CDECL(objc_msgSend_fpret)
+TYPE_DIRECTIVE(CDECL(objc_msgSend_fpret), @function)
+
+CDECL(objc_msgSend_fpret):
+CDECL(objc_msgSend):
+    MSGSEND a0 a1
+
+.globl CDECL(objc_msgSend_stret)
+TYPE_DIRECTIVE(CDECL(objc_msgSend_stret), @function)
+CDECL(objc_msgSend_stret):
+    MSGSEND a1 a2
