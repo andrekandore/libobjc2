@@ -151,11 +151,11 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 .macro trampoline arg0 arg1
-	mv \arg1, \arg0        # blocks dont need `_cmd` so replace it with `self`
-	ld \arg0, -4096(t0)   # move the block pointer over old self
-	ld t0, -4088(t0)     # load block inro jump point
-	jr  t0                 # jump to block
+	mv \arg1, \arg0        # replace `_cmd` with `self`
+	sub \arg0, sp, -4096   # load top of `block_header` a.k.a `*block`
+	j  (-4088)             # jump to block `(fnptr*)`
 .endm
+
 
 #define ARG0 a0
 #define ARG1 a1
