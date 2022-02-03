@@ -144,6 +144,24 @@
 #define SARG0 r1
 #define SARG1 r2
 
+#elif defined(__riscv64)
+
+////////////////////////////////////////////////////////////////////////////////
+// RISC-V (64-Bit) trampoline
+////////////////////////////////////////////////////////////////////////////////
+
+.macro trampoline arg0 arg1
+	mv \arg1, \arg0        # blocks dont need `_cmd` so replace it with `self`
+	ld \arg0, -4096(t0)   # move the block pointer over old self
+	ld t0, -4088(t0)     # load block inro jump point
+	jr  t0                 # jump to block
+.endm
+
+#define ARG0 a0
+#define ARG1 a1
+#define SARG0 a1
+#define SARG1 a2
+
 #else
 
 #warning imp_implementationWithBlock() not implemented for your architecture
