@@ -10,3 +10,6 @@
 #define TYPE_DIRECTIVE(symbol, symboltype)
 #endif
 
+#if __riscv && (__riscv_xlen == 64)
+#define __riscv64
+#endif

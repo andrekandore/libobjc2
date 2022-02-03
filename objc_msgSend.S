@@ -10,8 +10,7 @@
 #include "objc_msgSend.aarch64.S"
 #elif defined(__mips_n64) || defined(__mips_n32)
 #include "objc_msgSend.mips.S"
-#elif __riscv && (__riscv_xlen == 64)
-#define __riscv64
+#elif defined(__riscv64)
 #include "objc_msgSend.riscv64.S"
 #else
 #warning objc_msgSend() not implemented for your architecture
