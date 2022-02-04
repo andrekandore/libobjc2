@@ -158,7 +158,6 @@
 	jr  8(t0)              # jump to `(fnptr*)`
 .endm
 
-
 #define ARG0 a0
 #define ARG1 a1
 #define SARG0 a1
