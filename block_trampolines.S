@@ -152,8 +152,10 @@
 
 .macro trampoline arg0 arg1
 	mv \arg1, \arg0        # replace `_cmd` with `self`
-	sub \arg0, sp, -4096   # load top of `block_header` a.k.a `*block`
-	j  (-4088)             # jump to block `(fnptr*)`
+	auipc t0, 0            # get program counter
+	addi t0, zero, -2048   # move back half-way of `block_header`
+	lw \arg0, -2048(t0)    # load `*block` to arg0
+	jr  8(t0)              # jump to `(fnptr*)`
 .endm
 
 
