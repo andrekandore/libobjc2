@@ -151,11 +151,11 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 .macro trampoline arg0 arg1
-	mv \arg1, \arg0        # replace `_cmd` with `self`
-	auipc t0, 0            # get program counter
-	addi t0, zero, -2048   # move back half-way of `block_header`
-	lw \arg0, -2048(t0)    # load `*block` to arg0
-	jr  8(t0)              # jump to `(fnptr*)`
+	auipc t0, 0            # get program counter via zero offset
+	addi t0, t0, -2048   # move back half-way of `block_header`
+	mv \arg1, \arg0        # replace `_cmd` (arg1) with `self` (arg0)
+	ld \arg0, -2048(t0)    # load `*block` to (top of `block_header`)
+	jr  -2040(t0)          # jump to `(fnptr*)`, right after `*block`
 .endm
 
 #define ARG0 a0
