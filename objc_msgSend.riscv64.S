@@ -63,7 +63,13 @@
     # jump to imp
     jr   t2
 
-4:  # nil receiver
+4:  # nil receiver, return all nil/zero
+    ld  a0, zero
+    ld  a1, zero
+    fmv.s.x  fa0, zero
+    fmv.s.x  fa1, zero
+    jr  ra
+
 5:  # cant find cached imp for selector (c path)
 6:  # small object
 7:
@@ -91,3 +97,4 @@
 
 .text
 main:
+    MSGSEND a0, a1
