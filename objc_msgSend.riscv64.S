@@ -58,7 +58,7 @@
     beqz   t2, 5f
 
     # load method from slot
-    lp     t2, SLOT_OFFSET(t2)
+    ld     t2, SLOT_OFFSET(t2)
 
     # jump to imp
     jr   t2
