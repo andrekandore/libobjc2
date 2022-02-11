@@ -61,16 +61,48 @@
     ld     t2, SLOT_OFFSET(t2)
 
     # jump to imp
-    jr   t2
+    jr     t2
 
 4:  # nil receiver, return all nil/zero
-    ld  a0, zero
-    ld  a1, zero
-    fmv.s.x  fa0, zero
-    fmv.s.x  fa1, zero
-    jr  ra
+    ld          a0, zero
+    ld          a1, zero
+    fmv.s.x     fa0, zero
+    fmv.s.x     fa1, zero
+    jr          ra
 
-5:  # cant find cached imp for selector (c path)
+5:  # search for imp (slow c path)
+
+    # save all (8 int + 8 fp + ra)
+    # registers to stack (17 * 8)
+    addi    sp, sp, -136
+
+    # save integer registers on stack
+    sd      a0, 0(sp)
+    sd      a1, 8(sp)
+    sd      a2, 16(sp)
+    sd      a3, 24(sp)
+    sd      a4, 32(sp)
+    sd      a5, 40(sp)
+    sd      a6, 48(sp)
+    sd      a7, 56(sp)
+
+    # save fp registers on stack
+    fsd      fa0, 64(sp)
+    fsd      fa1, 72(sp)
+    fsd      fa2, 80(sp)
+    fsd      fa3, 88(sp)
+    fsd      fa4, 96(sp)
+    fsd      fa5, 104(sp)
+    fsd      fa6, 112(sp)
+    fsd      fa7, 120(sp)
+
+    # save return address on stack
+    sd      ra, 128(sp)
+
+    # todo: prepare args on stack
+
+    call    slowMsgLookup
+
 6:  # small object
 7:
 8:
