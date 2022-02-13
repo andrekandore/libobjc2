@@ -36,7 +36,7 @@
     # load byte 3 of dispatch table, shift left
     # by 3 add to dtable pointer, reload dtable
     srl    t4, t3, 16
-    lbu    t4, t4
+    lbu    t4, 0(t4)
     slli   t4, t4, 3
     add    t4, t2, t4
     ld     t2, DATA_OFFSET(t4)
@@ -44,14 +44,14 @@
 2:  # load byte 2 of dispatch table, shift left
     # by 3 add to dtable pointer, reload dtable
     srl    t4, t3, 8
-    lbu    t4, t4
+    lbu    t4, 0(t4)
     slli   t4, t4, 3
     add    t4, t2, t4
     ld     t2, DATA_OFFSET(t4)
 
 3:  # small byte 1 of dispatch table, shift left
     # by 3 add to dtable pointer, reload dtable
-    lbu    t4, t3
+    lbu    t4, 0(t3)
     slli   t4, t4, 3
     add    t4, t2, t4
     ld     t2, DATA_OFFSET(t4)
