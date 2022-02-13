@@ -72,9 +72,9 @@
 
 5:  # search for imp (slow c path)
 
-    # save all (8 int + 8 fp + ra)
-    # registers to stack (17 * 8)
-    addi    sp, sp, -136
+    # save all (8 int + 8 fp + ra + fp) registers
+    # to stack: 20 * 8 (aligned to 16 bytes) = 144
+    addi    sp, sp, -144
 
     # save integer registers on stack
     sd      a0, 0(sp)
@@ -99,14 +99,54 @@
     # save return address on stack
     sd      ra, 128(sp)
 
+    # save frame pointer on stack
+    sd      fp, 136(sp)
+
     # todo: prepare args on stack
 
     call    slowMsgLookup
 
-6:  # small object
-7:
-8:
-9:
+    # load integer registers from stack
+    ld      a0, 0(sp)
+    ld      a1, 8(sp)
+    ld      a2, 16(sp)
+    ld      a3, 24(sp)
+    ld      a4, 32(sp)
+    ld      a5, 40(sp)
+    ld      a6, 48(sp)
+    ld      a7, 56(sp)
+
+    # load fp registers from stack
+    fld      fa0, 64(sp)
+    fld      fa1, 72(sp)
+    fld      fa2, 80(sp)
+    fld      fa3, 88(sp)
+    fld      fa4, 96(sp)
+    fld      fa5, 104(sp)
+    fld      fa6, 112(sp)
+    fld      fa7, 120(sp)
+
+    # load return address from stack
+    ld      ra, 128(sp)
+
+    # save frame pointer on stack
+    sd      fp, 136(sp)
+
+6:  # reify small object tag to class
+
+    # convert tag to pointer offset
+    slli    t0, t0, 3
+
+    # load the array of small object
+    # classes, add offset and load class
+    la      t5, SmallObjectClasses
+    add     t0, t0, t5
+    ld      t0, (t0)
+
+    # start the search again from `1` with
+    # the real class that we have now
+    j   1b
+
 .cfi_endproc
 .endm
 
