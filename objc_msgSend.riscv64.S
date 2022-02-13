@@ -66,8 +66,8 @@
     jr     t2
 
 4:  # nil receiver, return all nil/zero
-    ld          a0, zero
-    ld          a1, zero
+    mv          a0, zero
+    mv          a1, zero
     fmv.s.x     fa0, zero
     fmv.s.x     fa1, zero
     jr          ra
