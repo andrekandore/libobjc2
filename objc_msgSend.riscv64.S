@@ -1,3 +1,5 @@
+#include "asmconstants.h"
+
 .macro MSGSEND receiver, sel
     .cfi_startproc
 
@@ -102,9 +104,37 @@
     # save frame pointer on stack
     sd      fp, 136(sp)
 
-    # todo: prepare args on stack
+    # bring frame pointer to stack
+    # start point before subroutine
+    addi    fp, sp, 136
+
+    # put receiver and selector on
+    # the stack with the pointer
+    # `&self` for that stack value
+    # into a0 so we can get it
+    # immediately after routine exit
+    # without doing much work
+    sd      \receiver, -8(sp)
+
+    # we set call frame information
+    # to know about some adjustment
+    # where to find fp and ra in case
+    # an exception occurs, so we set
+    # the offsets of those from where
+    # it might normally be expected
+    .cfi_def_cfa fp, 8
+    .cfi_offset fp, -8
+    .cfi_offset ra, -16
+
+    # prepare arguments `&self`
+    # and selector for `slowMsgLookup`
+    mv      a0, sp
+    mv      a2, \sel
 
     call    slowMsgLookup
+
+    # get the imp returned from `slowMsgLookup`
+    mv      t2, a0
 
     # load integer registers from stack
     ld      a0, 0(sp)
@@ -130,8 +160,9 @@
     ld      ra, 128(sp)
 
     # save frame pointer on stack
-    sd      fp, 136(sp)
+    ld      fp, 136(sp)
 
+    jr      t2
 6:  # reify small object tag to class
 
     # convert tag to pointer offset
